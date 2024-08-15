@@ -8,7 +8,7 @@ pub struct Vec3 {
     pub y: f64,
     pub z: f64,
 }
-type Point = Vec3;
+pub type Point3 = Vec3;
 impl Vec3 {
     //new(x,y,z)
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
