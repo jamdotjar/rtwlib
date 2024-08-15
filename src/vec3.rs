@@ -2,13 +2,14 @@
 use std::ops::{
     Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
 };
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 pub type Point3 = Vec3;
+
 impl Vec3 {
     //new(x,y,z)
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
@@ -28,6 +29,17 @@ impl Vec3 {
         let length: f64 = self.length();
         return self / length;
     }
+}
+
+#[macro_export]
+macro_rules! vec3 {
+    ($x:expr, $y:expr, $z:expr) => {
+        Vec3 {
+            x: $x as f64,
+            y: $y as f64,
+            z: $z as f64,
+        }
+    };
 }
 
 pub fn dot(a: &Vec3, b: &Vec3) -> f64 {
@@ -85,15 +97,6 @@ impl Neg for Vec3 {
     }
 }
 
-impl Clone for Vec3 {
-    fn clone(&self) -> Vec3 {
-        Vec3 {
-            x: self.x,
-            y: self.y,
-            z: self.z,
-        }
-    }
-}
 impl Add for Vec3 {
     type Output = Vec3;
 
@@ -141,6 +144,18 @@ impl Mul<f64> for Vec3 {
     }
 }
 
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, other: Vec3) -> Self::Output {
+        Vec3 {
+            x: self * other.x,
+            y: self * other.y,
+            z: self * other.z,
+        }
+    }
+}
+
 impl Div<f64> for Vec3 {
     type Output = Vec3;
 
@@ -149,6 +164,17 @@ impl Div<f64> for Vec3 {
             x: self.x / other,
             y: self.y / other,
             z: self.z / other,
+        }
+    }
+}
+impl Div<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn div(self, other: Vec3) -> Self::Output {
+        Vec3 {
+            x: self / other.x,
+            y: self / other.y,
+            z: self / other.z,
         }
     }
 }
