@@ -9,7 +9,9 @@ use std::io::{self, Write};
 use vec3::*;
 
 fn ray_color(r: Ray) -> Color {
-    return Color::new(0., 0., 0.);
+    let unit_direction = r.direction().normalized();
+    let a = 0.5 * (unit_direction.x + 1.0);
+    return (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.5, 0.7, 1.0);
 }
 
 fn main() {
