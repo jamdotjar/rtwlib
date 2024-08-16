@@ -26,8 +26,7 @@ impl Vec3 {
     }
 
     pub fn normalized(self) -> Self {
-        let length: f64 = self.length();
-        return self / length;
+        return self / self.length();
     }
 }
 
@@ -42,8 +41,8 @@ macro_rules! vec3 {
     };
 }
 
-pub fn dot(a: &Vec3, b: &Vec3) -> f64 {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
+    return (u[0] * v[0]) + (u[1] * v[1]) + (u[2] * v[2]);
 }
 
 pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
@@ -189,7 +188,3 @@ impl Div<Vec3> for Vec3 {
         }
     }
 }
-
-//point as an alias
-
-//Basic functions

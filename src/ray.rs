@@ -26,6 +26,6 @@ impl Ray {
         &self.direction
     }
     pub fn at(self, t: f64) -> Point3 {
-        return self.origin + Vec3::from(t) * self.direction;
+        return self.origin + (t * self.direction);
     }
 }
