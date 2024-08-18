@@ -3,9 +3,9 @@ use crate::{
     vec3::*,
 };
 
-struct Sphere {
-    center: Point3,
-    radius: f64,
+pub struct Sphere {
+    pub center: Point3,
+    pub radius: f64,
 }
 
 impl Sphere {
@@ -39,7 +39,8 @@ impl Hittable for Sphere {
 
         rec.t = root;
         rec.p = r.at(rec.t);
-        rec.normal = (rec.p - self.center) / self.radius;
+        let outward_normal = (rec.p - self.center) / self.radius;
+        rec.set_face_normal(r, &outward_normal);
 
         return true;
     }

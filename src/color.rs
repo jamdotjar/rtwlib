@@ -1,5 +1,7 @@
+use crate::hittable::*;
+use crate::ray::Ray;
+use crate::sphere::*;
 use crate::vec3::*;
-
 pub type Color = Vec3;
 
 pub fn write_color(pixel_color: Color) {
@@ -13,4 +15,16 @@ pub fn write_color(pixel_color: Color) {
     let bbyte = (255.999 * b) as u8;
 
     println!("{} {} {}\n", rbyte, gbyte, bbyte)
+}
+
+pub fn ray_color(r: Ray, world: &HittableList<Sphere>) -> Color {
+    let mut rec: HitRecord = Default::default();
+
+    if world.hit(&r, 0.0, f64::MAX, &mut rec) {
+        return 0.5 * (rec.normal + Color::new(1., 1., 1.));
+    }
+
+    let unit_direction = r.direction().normalized();
+    let a = 0.5 * (unit_direction.y + 1.0);
+    return (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.5, 0.7, 1.0);
 }
