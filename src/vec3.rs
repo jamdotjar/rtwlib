@@ -40,6 +40,7 @@ macro_rules! vec3 {
         }
     };
 }
+pub(crate) use vec3;
 
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     return (u[0] * v[0]) + (u[1] * v[1]) + (u[2] * v[2]);
