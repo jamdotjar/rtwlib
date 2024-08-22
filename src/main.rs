@@ -2,6 +2,7 @@ mod color;
 mod hittable;
 mod ray;
 mod sphere;
+mod utils;
 mod vec3;
 
 use color::*;
@@ -10,6 +11,7 @@ use ray::*;
 use sphere::*;
 use vec3::*;
 
+
 fn main() {
     //image size
     let aspect_ratio = (16.0 / 9.0);
@@ -17,7 +19,7 @@ fn main() {
     let image_height = (image_width as f64 / aspect_ratio) as i32;
 
     //World (how to change scene objects)
-    let mut world: HittableList<Sphere> = HittableList {
+    let mut world = HittableList {
         objects: Vec::new(),
     };
 

@@ -1,4 +1,5 @@
 use crate::{ray::Ray, vec3::*};
+use std::ops::Range;
 #[derive(Clone, Copy, Debug)]
 pub struct HitRecord {
     pub p: Point3,
@@ -6,9 +7,10 @@ pub struct HitRecord {
     pub t: f64,
     pub front_face: bool,
 }
-pub struct HittableList<T: Hittable> {
-    pub objects: Vec<T>,
+pub struct HittableList {
+    pub objects: Vec<Box<dyn Hittable>>,
 }
+
 
 impl HitRecord {
     //Outward normal must be unit length
@@ -33,20 +35,18 @@ impl Default for HitRecord {
     }
 }
 
-impl<T: Hittable> HittableList<T> {
-    pub fn add(&mut self, object: T) {
-        self.objects.push(object);
-    }
-}
+impl HittableList {
+    pub fn add<T: Hittable +'static>(&mut self, object: T) {
 
-impl<T: Hittable> Hittable for HittableList<T> {
-    fn hit(&self, r: &Ray, ray_tmin: f64, ray_tmax: f64, rec: &mut HitRecord) -> bool {
+        self.objects.push(Box::new(object));  }}
+impl Hittable for HittableList {
+    fn hit(&self, r: &Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {
         let mut temp_rec: HitRecord = Default::default();
         let mut hit_anything = false;
-        let mut closest_so_far = ray_tmax;
+        let mut closest_so_far = ray_t.end;
 
         for object in self.objects.iter() {
-            if object.hit(r, ray_tmin, closest_so_far, &mut temp_rec) {
+            if object.hit(r, ray_t.start..closest_so_far, &mut temp_rec) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
                 *rec = temp_rec;
@@ -57,7 +57,7 @@ impl<T: Hittable> Hittable for HittableList<T> {
 }
 
 pub trait Hittable {
-    fn hit(&self, r: &Ray, ray_tmin: f64, ray_tmax: f64, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: &Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {
         false
     }
 }
