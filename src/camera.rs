@@ -93,7 +93,7 @@ impl Camera {
         let mut rec: HitRecord = Default::default();
 
         if world.hit(&r, 0.001..f64::INFINITY, &mut rec) {
-           let direction = Vec3::random_on_hemisphere(rec.normal);
+           let direction = rec.normal+ Vec3::random_normalized();
             return 0.5 * self.ray_color(Ray::new(rec.p, direction), bounces-1, world);       }
 
         let unit_direction = r.direction().normalized();
