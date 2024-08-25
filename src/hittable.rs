@@ -37,7 +37,6 @@ impl Default for HitRecord {
 
 impl HittableList {
     pub fn add<T: Hittable +'static>(&mut self, object: T) {
-
         self.objects.push(Box::new(object));  }}
 impl Hittable for HittableList {
     fn hit(&self, r: &Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {

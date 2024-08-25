@@ -5,6 +5,7 @@ pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: u32,
     pub samples: u32,
+    pub bounces: u32,
     image_height: u32,
     sample_scale: f64,
     center: Point3,
@@ -19,6 +20,7 @@ impl Camera {
             aspect_ratio: 1.0,
             image_width: 400,
             samples: 100,
+            bounces: 10,
             image_height: 400,
             sample_scale: 1.0,
             center: Vec3::from(0.0),
@@ -39,7 +41,7 @@ impl Camera {
 
                 for _ in 0..self.samples {
                     let r = self.get_ray(i, j);
-                    pixel_color += self.ray_color(r, &world);
+                    pixel_color += self.ray_color(r,self.bounces, &world);
                 }
                 write_color( pixel_color * self.sample_scale);
             }
@@ -83,12 +85,16 @@ impl Camera {
         Ray::new(ray_origin, ray_direction)
     }
 
-    fn ray_color(&self, r: Ray, world: &HittableList) -> Color {
+    fn ray_color(&self, r: Ray,bounces: u32, world: &HittableList) -> Color {
+        if bounces == 0 {
+            return Color::from(0.);
+        }
+
         let mut rec: HitRecord = Default::default();
 
-        if world.hit(&r, 0.0..f64::INFINITY, &mut rec) {
-            return 0.5 * (rec.normal + Color::new(1., 1., 1.));
-        }
+        if world.hit(&r, 0.001..f64::INFINITY, &mut rec) {
+           let direction = Vec3::random_on_hemisphere(rec.normal);
+            return 0.5 * self.ray_color(Ray::new(rec.p, direction), bounces-1, world);       }
 
         let unit_direction = r.direction().normalized();
         let a = 0.5 * (unit_direction.y + 1.0);

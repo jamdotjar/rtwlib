@@ -15,7 +15,11 @@ impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
-
+    
+    pub fn random(min: f64, max: f64)->Vec3{
+        let mut rng = rand::thread_rng();
+        Vec3 {x: rng.gen_range(min..max), y:  rng.gen_range(min..max), z: rng.gen_range(min..max) }
+    }
     //length() - returns the length of a vector
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt() 
@@ -28,6 +32,30 @@ impl Vec3 {
     pub fn normalized(self) -> Self {
         return self / self.length();
     }
+
+    fn random_in_unit_sphere() -> Vec3 {
+       loop {
+            let p = Vec3::random(-1., 1.);
+            if p.length_squared()<1.{
+                return p;
+            }
+        }
+    }
+
+    fn random_normalized() -> Vec3 {
+        Self::random_in_unit_sphere().normalized()
+    }
+
+    pub fn random_on_hemisphere(normal: Vec3)->Vec3{
+        let on_sphere = Self::random_normalized();
+        if dot(&on_sphere, &normal)>0.0 {
+            return on_sphere;
+        }
+        else {
+            return -on_sphere;
+        }
+    }
+
 }
 
 #[macro_export]
@@ -40,6 +68,7 @@ macro_rules! vec3 {
         }
     };
 }
+use rand::Rng;
 pub(crate) use vec3;
 
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
