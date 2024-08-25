@@ -1,19 +1,17 @@
+mod camera;
 mod color;
 mod hittable;
 mod ray;
 mod sphere;
 mod utils;
 mod vec3;
-mod camera;
 
+use camera::*;
 use hittable::*;
 use sphere::*;
 use vec3::*;
-use camera::*;
-
 
 fn main() {
-  
     //World (how to change scene objects)
     let mut world = HittableList {
         objects: Vec::new(),
@@ -28,11 +26,10 @@ fn main() {
         radius: 0.5,
     });
 
-        let mut cam = Camera::new();
-            
-        cam.aspect_ratio = 19.0/9.0;
-        cam.image_width = 400;
-        
-        cam.render(world);
+    let mut cam = Camera::new();
 
-      }
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width = 600;
+
+    cam.render(world);
+}

@@ -9,3 +9,10 @@ Uses of the interval class have been replaced with rust's built in Range.
 
 
 Images are currently in the ppm format, but I'm looking into PNGs, I want to implement encoding myself so this is a looong term goal.
+
+Todos:
+
+- Multithreading 
+- Command line arguments
+- PNG support
+

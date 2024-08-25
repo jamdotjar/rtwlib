@@ -18,7 +18,7 @@ impl Vec3 {
 
     //length() - returns the length of a vector
     pub fn length(&self) -> f64 {
-        self.length_squared().sqrt() //TODO: implement fast inverse square root
+        self.length_squared().sqrt() 
     }
     //length_squared() - the length of a vector squared ( source of length )
     pub fn length_squared(&self) -> f64 {
@@ -186,6 +186,16 @@ impl Div<Vec3> for Vec3 {
             x: self.x / other.x,
             y: self.y / other.y,
             z: self.z / other.z,
+        }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
         }
     }
 }
