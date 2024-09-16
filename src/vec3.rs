@@ -29,6 +29,12 @@ impl Vec3 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
+    pub fn near_zero(&self) -> bool{
+        let s = 1e-8;
+        return  self.x.abs() < s && self.y.abs() < s && self.z.abs() < s 
+    }
+    
+
     pub fn normalized(self) -> Self {
         return self / self.length();
     }
@@ -40,6 +46,12 @@ impl Vec3 {
                 return p;
             }
         }
+    }
+    pub fn reflect(self, n: &Vec3) -> Self {
+
+
+        return self - *n*dot(&self, &n)*2.
+
     }
 
    pub fn random_normalized() -> Vec3 {
