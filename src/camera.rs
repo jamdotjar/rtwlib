@@ -29,7 +29,9 @@ impl Camera {
             pixel_delta_v: Vec3::from(0.0),
         }
     }
-    pub fn render(&mut self, world: HittableList) {
+    pub fn render(&mut self, world: HittableList) { //iterates though the width and height of the\
+        //
+        //image 
         self.initialize();
 
         println!("P3\n{} {}\n255\n", self.image_width, self.image_height);
@@ -39,7 +41,7 @@ impl Camera {
              for i in 0..=self.image_width - 1 {
                 let mut pixel_color = Color::from(0.0);
 
-                for _ in 0..self.samples {
+                for _ in 0..self.samples { //gets jittered rays per sample, averages result.
                     let r = self.get_ray(i, j);
                     pixel_color += self.ray_color(r,self.bounces, &world);
                 }
@@ -72,7 +74,7 @@ impl Camera {
         self.pixel00_loc = viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v);
     }
 
-    fn get_ray(&self, i: u32, j: u32) -> Ray {
+    fn get_ray(&self, i: u32, j: u32) -> Ray {//creates jittered rays from i, j image coords
         let offset = sample_square();
 
         let pixel_sample = self.pixel00_loc
@@ -85,7 +87,8 @@ impl Camera {
         Ray::new(ray_origin, ray_direction)
     }
 
-    fn ray_color(&self, r: Ray,bounces: u32, world: &HittableList) -> Color {
+    fn ray_color(&self, r: Ray,bounces: u32, world: &HittableList) -> Color { //actually traces the
+        //ray
         if bounces == 0 {
             return Color::from(0.);
         }
@@ -96,10 +99,11 @@ impl Camera {
             let mut scattered = Ray::new(Vec3::from(0.), Vec3::from(0.));
             let mut attenuation = Color::from(0.);
 
-            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered){
+            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered){//does bounce/scattter
+                //op for materials of hit object
                 return attenuation * self.ray_color(scattered, bounces-1, world)
             }
-            return Color::new(1., 0., 1.)    
+            return Color::new(0., 0., 0.)// Show up around the edge of metals 
         }
 
         let unit_direction = r.direction().normalized();
