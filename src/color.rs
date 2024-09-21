@@ -1,8 +1,10 @@
+use std::{fs::File, io::{prelude::*, BufWriter, Error}};
+
 use crate::{utils::RangeExtensions, vec3::*};
 
 pub type Color = Vec3;
 
-pub fn write_color(pixel_color: Color) {
+pub fn write_color(pixel_color: Color, writer: &mut BufWriter<&File>)-> std::io::Result<()>  {
     let r = pixel_color.x;
     let g = pixel_color.y;
     let b = pixel_color.z;
@@ -17,7 +19,9 @@ pub fn write_color(pixel_color: Color) {
     let gbyte = (g.clamp(intensity.0, intensity.1) * 255.) as u8;
     let bbyte = (b.clamp(intensity.0, intensity.1) * 255.) as u8;
 
-    println!("{} {} {}\n", rbyte, gbyte, bbyte)
+
+    write!(writer, "{} {} {}\n",rbyte, gbyte, bbyte)?;
+    Ok(())
 }
 
 fn linear_to_gamma(linear: f64) -> f64 {

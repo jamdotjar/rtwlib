@@ -1,6 +1,7 @@
 use crate::{color::*, hittable::*, ray::*, vec3::*};
 use rand::{thread_rng, Rng};
-
+use std::fs::File;
+use std::io::*;
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: u32,
@@ -12,10 +13,11 @@ pub struct Camera {
     pixel00_loc: Point3,
     pixel_delta_u: Vec3,
     pixel_delta_v: Vec3,
+    file: File,
 }
 
 impl Camera {
-    pub fn new() -> Camera {
+    pub fn new(file: File) -> Camera {
         Camera {
             aspect_ratio: 1.0,
             image_width: 400,
@@ -27,17 +29,21 @@ impl Camera {
             pixel00_loc: Vec3::from(0.0),
             pixel_delta_u: Vec3::from(0.0),
             pixel_delta_v: Vec3::from(0.0),
+            file, 
         }
     }
-    pub fn render(&mut self, world: HittableList) { //iterates though the width and height of the\
+    pub fn render(&mut self, world: HittableList) -> std::io::Result<()> { //iterates though the width and height of the\
         //
         //image 
         self.initialize();
+        let mut buf = BufWriter::new(&self.file);
 
-        println!("P3\n{} {}\n255\n", self.image_width, self.image_height);
+
+        write!(buf, "P3\n{} {}\n255\n", self.image_width, self.image_height)?;
 
         for j in 0..=self.image_height - 1 {
           eprint!("\r {}/{} lines rendered", j + 1, self.image_height);
+        
              for i in 0..=self.image_width - 1 {
                 let mut pixel_color = Color::from(0.0);
 
@@ -45,9 +51,11 @@ impl Camera {
                     let r = self.get_ray(i, j);
                     pixel_color += self.ray_color(r,self.bounces, &world);
                 }
-                write_color( pixel_color * self.sample_scale);
+                write_color( pixel_color * self.sample_scale,  &mut buf)?;
             }
+            buf.flush()?;
         }
+        Ok(())
     }
 
     fn initialize(&mut self) {
