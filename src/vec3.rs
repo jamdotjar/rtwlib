@@ -1,7 +1,5 @@
 #[allow(dead_code)]
-use std::ops::{
-    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
-};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Neg, Sub};
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
@@ -15,59 +13,59 @@ impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
-    
-    pub fn random(min: f64, max: f64)->Vec3{
+
+    //returns a random vector in the bounds of min to max
+    pub fn random(min: f64, max: f64) -> Vec3 {
         let mut rng = rand::thread_rng();
-        Vec3 {x: rng.gen_range(min..max), y:  rng.gen_range(min..max), z: rng.gen_range(min..max) }
+        Vec3 {
+            x: rng.gen_range(min..max),
+            y: rng.gen_range(min..max),
+            z: rng.gen_range(min..max),
+        }
     }
     //length() - returns the length of a vector
     pub fn length(&self) -> f64 {
-        self.length_squared().sqrt() 
+        self.length_squared().sqrt()
     }
     //length_squared() - the length of a vector squared ( source of length )
     pub fn length_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn near_zero(&self) -> bool{
+    pub fn near_zero(&self) -> bool { 
         let s = 1e-8;
-        return  self.x.abs() < s && self.y.abs() < s && self.z.abs() < s 
+        return self.x.abs() < s && self.y.abs() < s && self.z.abs() < s;
     }
-    
 
-    pub fn normalized(self) -> Self {
+    pub fn normalized(self) -> Self { //constrains vectors to the unit sphere (-1 to 1)
         return self / self.length();
-    }
+    } 
 
-    fn random_in_unit_sphere() -> Vec3 {
-       loop {
+    fn random_in_unit_sphere() -> Vec3 { //gets a random normalized vector
+        loop {
             let p = Vec3::random(-1., 1.);
-            if p.length_squared()<1.{
+            if p.length_squared() < 1. {
                 return p;
             }
         }
     }
+
     pub fn reflect(self, n: &Vec3) -> Self {
-
-
-        return self - *n*dot(&self, &n)*2.
-
+        return self - *n * dot(&self, &n) * 2.;
     }
 
-   pub fn random_normalized() -> Vec3 {
+    pub fn random_normalized() -> Vec3 {
         Self::random_in_unit_sphere().normalized()
     }
 
-    pub fn random_on_hemisphere(normal: Vec3)->Vec3{
+    pub fn random_on_hemisphere(normal: Vec3) -> Vec3 { // a random vector facing outwards relative to the normal
         let on_sphere = Self::random_normalized();
-        if dot(&on_sphere, &normal)>0.0 {
+        if dot(&on_sphere, &normal) > 0.0 {
             return on_sphere;
-        }
-        else {
+        } else {
             return -on_sphere;
         }
     }
-
 }
 
 #[macro_export]
@@ -95,6 +93,7 @@ pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
     }
 }
 
+//A bunch of utility implementations for stuff.
 impl From<f64> for Vec3 {
     fn from(n: f64) -> Self {
         Vec3 { x: n, y: n, z: n }

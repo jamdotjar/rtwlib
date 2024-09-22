@@ -12,13 +12,10 @@ use color::Color;
 use hittable::*;
 use material::*;
 use sphere::*;
-use vec3::*;
 use std::fs::File;
-fn main()  -> std::io::Result<()>{
-    //World, or a very large list of all the objects in the scene. 
-    let args: Vec<String> = std::env::args().collect();
-    
-    println!("{:?}", args[1]);
+use vec3::*;
+fn main() -> std::io::Result<()> {
+    //World, or a very large list of all the objects in the scene.
     let mut world = HittableList {
         objects: Vec::new(),
     };
@@ -32,12 +29,14 @@ fn main()  -> std::io::Result<()>{
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));
     world.add(Sphere::new(Point3::new(1., 0., -1.), 0.5, mat_right));
 
-    let mut file = File::create(args[1].to_string())?;
+    //Gets file from args
+    let args: Vec<String> = std::env::args().collect();
+    let file = File::create(args[1].to_string())?;
 
     let mut cam = Camera::new(file);
-
+    //RENDER SETTINGS
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 600;
+    cam.image_width = 400;
     cam.samples = 100;
     cam.bounces = 50;
 
