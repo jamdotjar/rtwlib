@@ -7,6 +7,7 @@ pub struct Camera {
     pub image_width: u32,
     pub samples: u32,
     pub bounces: u32,
+    pub vfov: f64,
     image_height: u32,
     sample_scale: f64,
     center: Point3,
@@ -25,6 +26,7 @@ impl Camera {
             bounces: 10,
             image_height: 400,
             sample_scale: 1.0,
+            vfov: 90.0,
             center: Vec3::from(0.0),
             pixel00_loc: Vec3::from(0.0),
             pixel_delta_u: Vec3::from(0.0),
@@ -64,9 +66,12 @@ impl Camera {
         self.image_height = (self.image_width as f64 / self.aspect_ratio) as u32;
 
         self.sample_scale = 1.0 / self.samples as f64;
+        
         //camera and viewport
         let focal_length = 1.0;
-        let viewport_height = 2.0;
+        let theta = self.vfov.to_radians();
+        let h = (theta/2.0).tan();
+        let viewport_height = 2.0 * h * focal_length;
         let viewport_width = viewport_height * (self.image_width as f64 / self.image_height as f64);
         let camera_center = Point3::new(0.0, 0.0, 0.0);
 
