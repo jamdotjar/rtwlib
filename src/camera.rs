@@ -108,7 +108,7 @@ impl Camera {
 
         if world.hit(&r, 0.001..f64::INFINITY, &mut rec) {
             let mut scattered = Ray::new(Vec3::from(0.), Vec3::from(0.));
-            let mut attenuation = Color::from(0.);
+            let mut attenuation = Color::from(1.);
 
             if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
                 //does bounce/scattter for materials of hit object
