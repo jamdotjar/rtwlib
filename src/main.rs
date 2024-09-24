@@ -19,6 +19,7 @@ fn main() -> std::io::Result<()> {
     let mut world = HittableList {
         objects: Vec::new(),
     };
+    /*
 
     let R = (PI/4.0).cos();
 
@@ -27,7 +28,7 @@ fn main() -> std::io::Result<()> {
 
     world.add(Sphere::new(Point3::new(-R, 0., -1.), R, mat_left));
     world.add(Sphere::new(Point3::new(R, 0., -1.), R, mat_right));
-    /*
+    */
     let mat_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
     let mat_center = Lambertian::new(Color::new(0.1, 0.2, 0.5));
     let mat_left = Dielectric::new(1.5);
@@ -38,7 +39,7 @@ fn main() -> std::io::Result<()> {
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.4, mat_bubble));
     world.add(Sphere::new(Point3::new(1., 0., -1.), 0.5, mat_right));
-    */
+    
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
     let file = File::create(args[1].to_string())?;
@@ -50,9 +51,10 @@ fn main() -> std::io::Result<()> {
     cam.samples = 100;
     cam.bounces = 8;
 
-    cam.vfov = 90.0;
-
-
+    cam.vfov = 20.0;
+    cam.lookfrom = Point3::new(-2., 2., 1.);
+    cam.lookat = Point3::new(0., 0., -1.);
+    cam.vup = Vec3::new(0., 1., 0.);
     cam.render(world)?;
     Ok(())
 }

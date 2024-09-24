@@ -8,13 +8,19 @@ pub struct Camera {
     pub samples: u32,
     pub bounces: u32,
     pub vfov: f64,
-    image_height: u32,
+    pub lookfrom: Point3,
+    pub lookat: Point3,
+    pub vup: Vec3,
     sample_scale: f64,
+    image_height: u32,
     center: Point3,
     pixel00_loc: Point3,
     pixel_delta_u: Vec3,
     pixel_delta_v: Vec3,
     file: File,
+    u: Vec3,
+    v: Vec3,
+    w: Vec3,
 }
 
 impl Camera {
@@ -27,10 +33,16 @@ impl Camera {
             image_height: 400,
             sample_scale: 1.0,
             vfov: 90.0,
+            lookfrom: Point3::from(0.),
+            lookat: Point3::new(0., 0., -1.),
+            vup: Vec3::new(0., 1., 0.),
             center: Vec3::from(0.0),
             pixel00_loc: Vec3::from(0.0),
             pixel_delta_u: Vec3::from(0.0),
             pixel_delta_v: Vec3::from(0.0),
+            u: Vec3::from(0.0),
+            v: Vec3::from(0.0),
+            w: Vec3::from(0.0),            
             file,
         }
     }
@@ -67,24 +79,29 @@ impl Camera {
 
         self.sample_scale = 1.0 / self.samples as f64;
         
+        self.center = self.lookfrom;
+
         //camera and viewport
-        let focal_length = 1.0;
+        let focal_length = (self.lookfrom - self.lookat).length();
+    
         let theta = self.vfov.to_radians();
         let h = (theta/2.0).tan();
         let viewport_height = 2.0 * h * focal_length;
         let viewport_width = viewport_height * (self.image_width as f64 / self.image_height as f64);
-        let camera_center = Point3::new(0.0, 0.0, 0.0);
 
+        self.w = (self.lookfrom - self.lookat ).normalized();
+        self.u = cross(&self.vup, &self.w).normalized();
+        self.v = cross(&self.w, &self.u);
+        let viewport_u = viewport_width * self.u;
+        let viewport_v = viewport_height * -self.v;
         //Creates the vectors across the edge of the viewport
-        let viewport_u = vec3!(viewport_width, 0, 0);
-        let viewport_v = vec3!(0, -viewport_height, 0);
 
         //calculates the delta vectors, for movement between pixels.
         self.pixel_delta_u = viewport_u / self.image_width as f64;
         self.pixel_delta_v = viewport_v / self.image_height as f64;
 
         let viewport_upper_left =
-            camera_center - vec3!(0, 0, focal_length) - viewport_u / 2.0 - viewport_v / 2.0;
+            self.center - (focal_length * self.w)- viewport_u / 2.0 - viewport_v / 2.0;
         self.pixel00_loc = viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v);
     }
 
