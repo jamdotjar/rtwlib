@@ -1,4 +1,5 @@
 use core::ops::Range;
+use std::f64::consts::PI;
 
 pub trait RangeExtensions {
     fn size(&self) -> f64;
