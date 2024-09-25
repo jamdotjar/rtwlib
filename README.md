@@ -12,7 +12,6 @@ Images are currently in the ppm format, but I'm looking into PNGs, I want to imp
 
 Todos:
 
-- Multithreading 
-- Command line arguments
+- Multithreading
 - PNG support
 
