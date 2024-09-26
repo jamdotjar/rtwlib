@@ -32,16 +32,18 @@ impl Vec3 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn near_zero(&self) -> bool { 
+    pub fn near_zero(&self) -> bool {
         let s = 1e-8;
         return self.x.abs() < s && self.y.abs() < s && self.z.abs() < s;
     }
 
-    pub fn normalized(self) -> Self { //constrains vectors to the unit sphere (-1 to 1)
+    pub fn normalized(self) -> Self {
+        //constrains vectors to the unit sphere (-1 to 1)
         return self / self.length();
-    } 
+    }
 
-    fn random_in_unit_sphere() -> Vec3 { //gets a random normalized vector
+    fn random_in_unit_sphere() -> Vec3 {
+        //gets a random normalized vector
         loop {
             let p = Vec3::random(-1., 1.);
             if p.length_squared() < 1. {
@@ -49,18 +51,24 @@ impl Vec3 {
             }
         }
     }
-
+    pub fn random_in_unit_disk() -> Vec3 {
+        loop {
+            let p = Vec3::random(-1., 1.) * Vec3::new(1., 1., 0.);
+            if p.length_squared() < 1. {
+                return p
+            }
+        }
+    }
     pub fn reflect(self, n: &Vec3) -> Self {
         return self - *n * dot(&self, &n) * 2.;
     }
-    
-
 
     pub fn random_normalized() -> Vec3 {
         Self::random_in_unit_sphere().normalized()
     }
 
-    pub fn random_on_hemisphere(normal: Vec3) -> Vec3 { // a random vector facing outwards relative to the normal
+    pub fn random_on_hemisphere(normal: Vec3) -> Vec3 {
+        // a random vector facing outwards relative to the normal
         let on_sphere = Self::random_normalized();
         if dot(&on_sphere, &normal) > 0.0 {
             return on_sphere;
@@ -86,12 +94,12 @@ pub(crate) use vec3;
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     return (u[0] * v[0]) + (u[1] * v[1]) + (u[2] * v[2]);
 }
-    pub fn refract(uv: Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
-        let cos_theta = f64::min(dot(& -uv, n), 1.0); //max of two values
-        let r_out_perp = etai_over_etat * ( uv + cos_theta * *n);
-        let r_out_parallel = -*n * (1.0-r_out_perp.length_squared()).abs().sqrt();
-        r_out_perp + r_out_parallel
-    }
+pub fn refract(uv: Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
+    let cos_theta = f64::min(dot(&-uv, n), 1.0); //max of two values
+    let r_out_perp = etai_over_etat * (uv + cos_theta * *n);
+    let r_out_parallel = -*n * (1.0 - r_out_perp.length_squared()).abs().sqrt();
+    r_out_perp + r_out_parallel
+}
 pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
     Vec3 {
         x: a.y * b.z - a.z * b.y,
