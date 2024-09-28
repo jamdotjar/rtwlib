@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{prelude::*, BufWriter, Error},
+    io::{prelude::*, BufWriter},
 };
 
 use crate::{utils::RangeExtensions, vec3::*};

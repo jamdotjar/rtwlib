@@ -1,4 +1,4 @@
-use rand::{rngs::StdRng, Rng};
+use rand::{Rng};
 
 use crate::{color::Color, dot, ray::Ray, vec3::*, HitRecord};
 
@@ -16,6 +16,8 @@ pub trait Material {
 
 pub struct Lambertian {
     albedo: Color,
+}
+pub struct Normal {
 }
 pub struct Metal {
     albedo: Color,
@@ -38,8 +40,14 @@ impl Lambertian {
 impl Dielectric {
     pub fn new(ior: f64) -> Self {
         Dielectric { ior }
+    
     }
    }
+impl Normal {
+    pub fn new() -> Self {
+        Normal {}
+    }    
+}
 
 impl Material for Lambertian {
     fn scatter(
@@ -61,6 +69,19 @@ impl Material for Lambertian {
         *attenuation = self.albedo;
         true
     }
+}
+
+impl Material for Normal {
+    fn scatter(&self,
+        _r_in: &Ray,
+        rec: &HitRecord,
+        attenuation: &mut Color,
+        scattered: &mut Ray,) -> bool {
+            let mut scatter_direction = rec.normal + (Vec3::random_normalized());
+            *scattered = Ray::new(rec.p, scatter_direction);
+            *attenuation = Color::new(rec.normal);
+            true
+        }
 }
 
 impl Material for Metal {
@@ -103,7 +124,7 @@ impl Material for Dielectric {
         let mut direction = Vec3::from(0.);
         
         
-        if (cannot_refract || reflectance(cos_theta, ri) > rand::thread_rng().gen_range(0.0..1.0)){
+        if cannot_refract || reflectance(cos_theta, ri) > rand::thread_rng().gen_range(0.0..1.0){
             direction = unit_direction.reflect(&rec.normal)
         } else {
             direction = refract(unit_direction, &rec.normal, ri)

@@ -11,7 +11,7 @@ use camera::*;
 use color::Color;
 use hittable::*;
 use material::*;
-use rand::Rng;
+//use rand::Rng;
 use sphere::*;
 use std::{f64::consts::PI, fs::File};
 use vec3::*;
@@ -29,19 +29,16 @@ fn main() -> std::io::Result<()> {
 
     world.add(Sphere::new(Point3::new(-R, 0., -1.), R, mat_left));
     world.add(Sphere::new(Point3::new(R, 0., -1.), R, mat_right));
-
+    */
     let mat_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
-    let mat_center = Lambertian::new(Color::new(0.1, 0.2, 0.5));
+    let mat_center = Normal::new();
     let mat_left = Dielectric::new(1.5);
-    let mat_bubble = Dielectric::new(1.0/1.5);
     let mat_right = Metal::new(Color::new(0.8, 0.6, 0.2), 0.2);
     world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_ground));
     world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_center));
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));
-    world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.4, mat_bubble));
     world.add(Sphere::new(Point3::new(1., 0., -1.), 0.5, mat_right));
-    */
-    let mat_ground = Lambertian::new(Color::from(0.5));
+    /*    let mat_ground = Lambertian::new(Color::from(0.5));
     world.add(Sphere::new(Point3::new(0., -1000., 0.), 1000., mat_ground));
     let mut rng = rand::thread_rng();
 
@@ -88,7 +85,7 @@ fn main() -> std::io::Result<()> {
     world.add(Sphere::new(Point3::new(0., 1., 0.), 1., mat_1));
     world.add(Sphere::new(Point3::new(-4., 1., 0.), 1., mat_2));
     world.add(Sphere::new(Point3::new(4., 1., 0.), 1., mat_3));
-
+    */
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
     let file = File::create(args[1].to_string())?;
@@ -98,14 +95,14 @@ fn main() -> std::io::Result<()> {
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 600;
     cam.samples = 100;
-    cam.bounces = 8;
+    cam.bounces = 50;
 
-    cam.vfov = 20.0;
-    cam.lookfrom = Point3::new(13., 2., 3.);
-    cam.lookat = Point3::new(0., 0., 0.);
+    cam.vfov = 45.0;
+    cam.lookfrom = Point3::new(0., 0.7, 1.);
+    cam.lookat = Point3::new(0., 0.5, 0.);
     cam.vup = Vec3::new(0., 1., 0.);
 
-    cam.defocus_angle = 0.6;
+    cam.defocus_angle = 0.0;
     cam.focus_dist = 10.0;
     cam.render(world)?;
     Ok(())
