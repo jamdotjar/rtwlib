@@ -153,7 +153,7 @@ impl Camera {
         // if the ray hits nothing, calculates a sky color
         let unit_direction = r.direction.normalized();
         let a = 0.5* (unit_direction.y + 1.0);
-        return (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.4, 0.53, 0.75);
+        return (1.0 - a) * Color::new(0.8, 0.8, 1.) + a * Color::new(0.4, 0.6, 1.);
         
     }
 

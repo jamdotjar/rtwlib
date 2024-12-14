@@ -72,16 +72,18 @@ impl Material for Lambertian {
 }
 
 impl Material for Normal {
-    fn scatter(&self,
+    fn scatter(
+        &self,
         _r_in: &Ray,
         rec: &HitRecord,
         attenuation: &mut Color,
-        scattered: &mut Ray,) -> bool {
-            let mut scatter_direction = rec.normal + (Vec3::random_normalized());
-            *scattered = Ray::new(rec.p, scatter_direction);
-            *attenuation = Color::new(rec.normal);
-            true
-        }
+        scattered: &mut Ray,
+    ) -> bool {
+        let normal_color = 0.5 * Color::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0);
+        *attenuation = normal_color;
+        *scattered = Ray::new(rec.p, rec.normal);
+        true
+    }
 }
 
 impl Material for Metal {
