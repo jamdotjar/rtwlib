@@ -1,20 +1,11 @@
-mod camera;
-mod color;
-mod hittable;
-mod material;
-mod ray;
-mod sphere;
-mod utils;
-mod vec3;
-
-use camera::*;
-use color::Color;
-use hittable::*;
-use material::*;
+use rtwlib::camera::*;
+use rtwlib::color::Color;
+use rtwlib::hittable::*;
+use rtwlib::material::*;
 //use rand::Rng;
-use sphere::*;
+use rtwlib::sphere::*;
 use std::{f64::consts::PI, fs::File};
-use vec3::*;
+use rtwlib::vec3::*;
 fn main() -> std::io::Result<()> {
     //World, or a very large list of all the objects in the scene.
     let mut world = HittableList {

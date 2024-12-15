@@ -1,6 +1,6 @@
 use rand::{Rng};
 
-use crate::{color::Color, dot, ray::Ray, vec3::*, HitRecord};
+use crate::{color::Color, ray::Ray, vec3::*, hittable::HitRecord};
 
 pub trait Material {
     fn scatter(
@@ -79,7 +79,7 @@ impl Material for Normal {
         scattered: &mut Ray,) -> bool {
             let mut scatter_direction = rec.normal + (Vec3::random_normalized());
             *scattered = Ray::new(rec.p, scatter_direction);
-            *attenuation = Color::new(rec.normal);
+            *attenuation = Color::new(rec.normal.x, rec.normal.y, rec.normal.z);
             true
         }
 }
