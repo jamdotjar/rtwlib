@@ -22,9 +22,9 @@ fn main() -> std::io::Result<()> {
     };
 
     
-    let mat_normal = Rc::new(Normal::new());
-   // world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_normal.clone()));
-    world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_normal.clone()));
+    let mat_floor = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.8)));
+    world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_floor.clone()));
+    world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_floor.clone()));
   
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
@@ -36,7 +36,7 @@ fn main() -> std::io::Result<()> {
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = args[2].parse().unwrap_or(600);
     
-    cam.samples = 5;
+    cam.samples = 150;
     cam.bounces = 5;
 
     cam.vfov = 45.0;
