@@ -22,9 +22,12 @@ fn main() -> std::io::Result<()> {
     };
 
     
-    let mat_floor = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.8)));
-    world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_floor.clone()));
-    world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_floor.clone()));
+    let mat_floor = Rc::new(Lambertian::new(Color::from(1.)));
+    let mat_l = Rc::new(Metal::new(Color::new(0.92, 0.9, 0.5), 0.));
+    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.9), 0.1));
+    world.add(Sphere::new(Point3::new(0., -100.5, 0.), 100., mat_floor.clone()));
+    world.add(Sphere::new(Point3::new(-0.5, 0., -1.2), 0.5, mat_left.clone()));
+    world.add(Sphere::new(Point3::new(0.5, 0., -1.2), 0.5, mat_right.clone()));
   
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
@@ -34,10 +37,14 @@ fn main() -> std::io::Result<()> {
     let mut cam = Camera::new(file);
     //RENDER SETTINGS
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = args[2].parse().unwrap_or(600);
+    if args.len() > 2 {
+    cam.image_width = args[2].parse().unwrap_or(600);}
+    else {
+        cam.image_width = 600;
+    }
     
     cam.samples = 150;
-    cam.bounces = 5;
+    cam.bounces = 100;
 
     cam.vfov = 45.0;
     cam.lookfrom = Point3::new(0., 0., 1.);
