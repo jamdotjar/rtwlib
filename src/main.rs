@@ -22,12 +22,16 @@ fn main() -> std::io::Result<()> {
     };
 
     
-    let mat_floor = Rc::new(Lambertian::new(Color::from(1.)));
-    let mat_l = Rc::new(Metal::new(Color::new(0.92, 0.9, 0.5), 0.));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.9), 0.1));
+    let mat_floor = Rc::new(Lambertian::new(Color::new(0.1, 0.9, 0.3)));
+    let mat_back = Rc::new(Lambertian::new(Color::new(1., 0.1, 0.2)));
+    let mat_back2 = Rc::new(Metal::new(Color::new(0.8, 0.7, 0.6), 0.0));
+    let mat_front = Rc::new(Dielectric::new( 1.47));
+    let mat_front2 = Rc::new(Dielectric::new( 1.0/1.5));
     world.add(Sphere::new(Point3::new(0., -100.5, 0.), 100., mat_floor.clone()));
-    world.add(Sphere::new(Point3::new(-0.5, 0., -1.2), 0.5, mat_left.clone()));
-    world.add(Sphere::new(Point3::new(0.5, 0., -1.2), 0.5, mat_right.clone()));
+    world.add(Sphere::new(Point3::new(0.7, 0.2, -2.), 0.7, mat_back.clone()));
+    world.add(Sphere::new(Point3::new(-0.7, 0.2, -2.), 0.7, mat_back2.clone()));
+    world.add(Sphere::new(Point3::new(0., 0., -1.), 0.5, mat_front.clone()));
+    //world.add(Sphere::new(Point3::new(-0.1, 0., -1.2), 0.1, mat_front2.clone()));
   
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
@@ -43,16 +47,22 @@ fn main() -> std::io::Result<()> {
         cam.image_width = 600;
     }
     
-    cam.samples = 150;
+    cam.samples = 500;
     cam.bounces = 100;
 
     cam.vfov = 45.0;
     cam.lookfrom = Point3::new(0., 0., 1.);
-    cam.lookat = Point3::new(0., 0., 0.);
+    cam.lookat = Point3::new(0., 0., -1.2);
     cam.vup = Vec3::new(0., 1., 0.);
 
-    cam.defocus_angle = 0.0;
+    cam.defocus_angle = 0.0 ;
     cam.focus_dist = 10.0;
+    print!("rendering scene with {} objects 
+    resolution: {}x{}
+    samples: {}
+    bounces: {}
+    fov: {}",
+     world.objects.len(), cam.image_width, (cam.image_width as f64 /cam.aspect_ratio) as u32, cam.samples, cam.bounces, cam.vfov);
     cam.render(world)?;
     Ok(())
 }
