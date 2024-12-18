@@ -4,6 +4,7 @@ use rtwlib::hittable::*;
 use rtwlib::material::*;
 //use rand::Rng;
 use rtwlib::sphere::*;
+use std::rc::Rc;
 use std::{f64::consts::PI, fs::File};
 use rtwlib::vec3::*;
 fn main() -> std::io::Result<()> {
@@ -21,10 +22,10 @@ fn main() -> std::io::Result<()> {
     world.add(Sphere::new(Point3::new(-R, 0., -1.), R, mat_left));
     world.add(Sphere::new(Point3::new(R, 0., -1.), R, mat_right));
     */
-    let mat_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
-    let mat_center = Normal::new();
-    let mat_left = Dielectric::new(1.5);
-    let mat_right = Metal::new(Color::new(0.8, 0.6, 0.2), 0.2);
+    let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+        let mat_center = Rc::new(Normal::new());
+    let mat_left = Rc::new(Dielectric::new(1.5));
+    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.2));
     world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_ground));
     world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_center));
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));

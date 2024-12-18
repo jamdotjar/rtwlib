@@ -57,7 +57,8 @@ impl Hittable for HittableList {
         let mut hit_anything = false;
         let mut closest_so_far = ray_t.end;
 
-        for object in self.objects.iter() {//checks every object for a hit
+        for object in self.objects.iter() {
+            //checks every object for a hit
             let mut temp_rec: HitRecord = Default::default();
 
             if object.hit(r, ray_t.start..closest_so_far, &mut temp_rec) {
