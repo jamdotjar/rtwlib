@@ -1,8 +1,5 @@
 use crate::{
-    color::Color,
-    material::{Lambertian, Material},
-    ray::Ray,
-    vec3::*,
+    color::Color, material::{Lambertian, Material}, ray::Ray, sphere::Sphere, vec3::*
 };
 
 use std::{ops::Range, rc::Rc};
@@ -50,14 +47,23 @@ impl HittableList {
     pub fn add<T: Hittable + 'static>(&mut self, object: T) {
         self.objects.push(Box::new(object));
     }
-} //appends the object to the list
-
+    pub fn as_simple_vec(&self) -> Vec<String>  {
+        let mut out = vec![];
+        
+            for object in &self.objects {
+        out.push(object.as_string());
+        }
+        
+        out
+    }
+} 
 impl Hittable for HittableList {
     fn hit(&self, r: &Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {
         let mut hit_anything = false;
         let mut closest_so_far = ray_t.end;
 
         for object in self.objects.iter() {
+
             //checks every object for a hit
             let mut temp_rec: HitRecord = Default::default();
 
@@ -69,10 +75,16 @@ impl Hittable for HittableList {
         }
         return hit_anything;
     }
+
+    fn as_string(&self) -> String{
+       todo!() 
+    }
 }
 
 pub trait Hittable {
     fn hit(&self, _r: &Ray, _ray_t: Range<f64>, _rec: &mut HitRecord) -> bool {
         false
     }
+    fn as_string(&self) -> String; 
 }
+

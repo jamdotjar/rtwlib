@@ -1,8 +1,10 @@
+use std::fmt::Debug;
+
 use rand::{Rng};
 
 use crate::{color::Color, ray::Ray, vec3::*, hittable::HitRecord};
 
-pub trait Material {
+pub trait Material: Debug {
     fn scatter(
         &self,
         _r_in: &Ray,
@@ -12,17 +14,24 @@ pub trait Material {
     ) -> bool {
         false
     }
+    fn as_string(&self) -> String {
+        format!("{:?}", self)
+    }
 }
 
+#[derive(Debug)]
 pub struct Lambertian {
     albedo: Color,
 }
+#[derive(Debug)]
 pub struct Normal {
 }
+#[derive(Debug)]
 pub struct Metal {
     albedo: Color,
     fuzz: f64, //I could enforce a specific range, buts its funnier not to.
 }
+#[derive(Debug)]
 pub struct Dielectric {
     ior: f64,
 }

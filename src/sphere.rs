@@ -10,7 +10,6 @@ pub struct Sphere {
     radius: f64,
     mat: Rc<dyn Material>,
 }
-
 impl Sphere {
     pub fn new(center: Point3, radius: f64, mat: Rc<dyn Material>) -> Self {
         Sphere {
@@ -53,4 +52,8 @@ impl Hittable for Sphere {
 
         return true;
     }
+    fn as_string(&self) -> String {
+       format!("Sphere - radius: {}, position: ({}x, {}z, {}z), material: {:?}", self.radius, self.center.x, self.center.y, self.center.z, self.mat) 
+
+    } 
 }
