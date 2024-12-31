@@ -4,9 +4,9 @@ use rtwlib::hittable::*;
 use rtwlib::material::*;
 //use rand::Rng;
 use rtwlib::sphere::*;
+use rtwlib::vec3::*;
 use std::rc::Rc;
 use std::{f64::consts::PI, fs::File};
-use rtwlib::vec3::*;
 fn main() -> std::io::Result<()> {
     //World, or a very large list of all the objects in the scene.
     let mut world = HittableList {
@@ -23,7 +23,7 @@ fn main() -> std::io::Result<()> {
     world.add(Sphere::new(Point3::new(R, 0., -1.), R, mat_right));
     */
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-        let mat_center = Rc::new(Normal::new());
+    let mat_center = Rc::new(Normal::new());
     let mat_left = Rc::new(Dielectric::new(1.5));
     let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.2));
     world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_ground));
@@ -96,6 +96,9 @@ fn main() -> std::io::Result<()> {
 
     cam.defocus_angle = 0.0;
     cam.focus_dist = 10.0;
-    cam.render(world)?;
+    let height = cam.get_height();
+    cam.render(world, |progress| {
+        println!("{}/{} lines rendered", progress, height);
+    })?;
     Ok(())
 }

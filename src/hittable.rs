@@ -1,5 +1,9 @@
 use crate::{
-    color::Color, material::{Lambertian, Material}, ray::Ray, sphere::Sphere, vec3::*
+    color::Color,
+    material::{Lambertian, Material},
+    ray::Ray,
+    sphere::Sphere,
+    vec3::*,
 };
 
 use std::{ops::Range, rc::Rc};
@@ -47,23 +51,31 @@ impl HittableList {
     pub fn add<T: Hittable + 'static>(&mut self, object: T) {
         self.objects.push(Box::new(object));
     }
-    pub fn as_simple_vec(&self) -> Vec<String>  {
+    pub fn as_simple_vec(&self) -> Vec<String> {
         let mut out = vec![];
-        
-            for object in &self.objects {
-        out.push(object.as_string());
+
+        for object in &self.objects {
+            out.push(object.as_string());
         }
-        
+
         out
     }
-} 
+    pub fn as_info_vec(&self) -> Vec<Vec<String>> {
+        let mut out = vec![];
+
+        for object in &self.objects {
+            out.push(object.as_info_vec());
+        }
+
+        out
+    }
+}
 impl Hittable for HittableList {
     fn hit(&self, r: &Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {
         let mut hit_anything = false;
         let mut closest_so_far = ray_t.end;
 
         for object in self.objects.iter() {
-
             //checks every object for a hit
             let mut temp_rec: HitRecord = Default::default();
 
@@ -75,16 +87,43 @@ impl Hittable for HittableList {
         }
         return hit_anything;
     }
-
-    fn as_string(&self) -> String{
-       todo!() 
-    }
 }
 
-pub trait Hittable {
+pub trait Hittable: HittableClone {
     fn hit(&self, _r: &Ray, _ray_t: Range<f64>, _rec: &mut HitRecord) -> bool {
         false
     }
-    fn as_string(&self) -> String; 
+    fn as_string(&self) -> String {
+        "Hittable".to_string()
+    }
+    fn as_info_vec(&self) -> Vec<String> {
+        vec![]
+    }
 }
 
+pub trait HittableClone {
+    fn clone_box(&self) -> Box<dyn Hittable>;
+}
+
+impl<T> HittableClone for T
+where
+    T: 'static + Hittable + Clone,
+{
+    fn clone_box(&self) -> Box<dyn Hittable> {
+        Box::new(self.clone())
+    }
+}
+
+impl Clone for Box<dyn Hittable> {
+    fn clone(&self) -> Box<dyn Hittable> {
+        self.clone_box()
+    }
+}
+
+impl Clone for HittableList {
+    fn clone(&self) -> Self {
+        HittableList {
+            objects: self.objects.iter().map(|obj| obj.clone()).collect(),
+        }
+    }
+}
