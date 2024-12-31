@@ -1,11 +1,18 @@
 [package]
-name = "rtweekend"
+name = "rtwlib"
 version = "0.1.0"
 edition = "2021"
+authors = ["jamdotjar"]
+description = "Raytracing library based on Ray Tracing in One Weekend by Peter Shirley"
+license = "GPL-3.0"
+path = "src/lib.rs"
+repository = "https://github.com/jamdotjar/rtweekend-tui"
+keywords = ["raytracing", "graphics", "tui"]
+categories = ["rendering"]
 
 [lib]
 name = "rtwlib"
-path = "src/lib.rs"
+version = "0.1.0"
 
 [dependencies]
 rand = "0.8.5"

@@ -89,7 +89,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rtweekend"
+name = "rtwlib"
 version = "0.1.0"
 dependencies = [
  "rand",
