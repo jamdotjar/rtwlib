@@ -75,6 +75,7 @@ impl Camera {
                     let r = self.get_ray(i, j);
                     pixel_color += self.ray_color(r, self.bounces, &world);
                 }
+                
                 write_color(pixel_color * self.sample_scale, &mut buf)?;
             }
             buf.flush()?;
@@ -83,7 +84,7 @@ impl Camera {
         Ok(())
     }
 
-    fn initialize(&mut self) {
+    pub fn initialize(&mut self) {
         //image size
         self.image_height = (self.image_width as f64 / self.aspect_ratio) as u32;
 
@@ -118,7 +119,7 @@ impl Camera {
         self.defocus_disc_v = self.v * defocus_radius;
     }
 
-    fn get_ray(&self, i: u32, j: u32) -> Ray {
+    pub fn get_ray(&self, i: u32, j: u32) -> Ray {
         //creates rays from defocus disk pointing at a random point in pixel i, j
         let offset = sample_square();
 
@@ -131,8 +132,11 @@ impl Camera {
 
         Ray::new(ray_origin, ray_direction)
     }
+    pub fn get_sample_scale(&self) -> f64 {
+        self.sample_scale
+    }
 
-    fn ray_color(&self, r: Ray, bounces: u32, world: &HittableList) -> Color {
+    pub fn ray_color(&self, r: Ray, bounces: u32, world: &HittableList) -> Color {
         //actually traces the
         //ray
         if bounces == 0 {
