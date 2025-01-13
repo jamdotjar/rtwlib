@@ -1,6 +1,6 @@
 [package]
 name = "rtwlib"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["jamdotjar"]
 description = "Raytracing library based on Ray Tracing in One Weekend by Peter Shirley"
@@ -12,7 +12,7 @@ categories = ["rendering"]
 
 [lib]
 name = "rtwlib"
-version = "0.1.0"
+version = "0.1.1"
 
 [dependencies]
 rand = "0.8.5"

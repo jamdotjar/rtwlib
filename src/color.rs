@@ -26,7 +26,7 @@ pub fn write_color(pixel_color: Color, writer: &mut BufWriter<&File>) -> std::io
     Ok(())
 }
 
-fn linear_to_gamma(linear: f64) -> f64 {
+pub fn linear_to_gamma(linear: f64) -> f64 {
     if linear > 0. {
         return linear.sqrt();
     }
