@@ -55,7 +55,7 @@ impl Vec3 {
         loop {
             let p = Vec3::random(-1., 1.) * Vec3::new(1., 1., 0.);
             if p.length_squared() < 1. {
-                return p
+                return p;
             }
         }
     }
@@ -77,7 +77,6 @@ impl Vec3 {
         }
     }
 }
-
 #[macro_export]
 macro_rules! vec3 {
     ($x:expr, $y:expr, $z:expr) => {
@@ -90,6 +89,8 @@ macro_rules! vec3 {
 }
 use rand::Rng;
 pub(crate) use vec3;
+
+use crate::color::linear_to_gamma;
 
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     return (u[0] * v[0]) + (u[1] * v[1]) + (u[2] * v[2]);
@@ -251,6 +252,16 @@ impl AddAssign for Vec3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Default for Vec3 {
+    fn default() -> Self {
+        Self {
+            x: 0.,
+            y: 0.,
+            z: 0.,
         }
     }
 }

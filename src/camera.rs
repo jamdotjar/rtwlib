@@ -1,7 +1,7 @@
 use crate::{color::*, hittable::*, ray::*, vec3::*};
 use rand::{thread_rng, Rng};
 use std::fs::File;
-use std::io::*;
+use std::{default, io::*};
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: u32,
@@ -19,7 +19,6 @@ pub struct Camera {
     pixel00_loc: Point3,
     pixel_delta_u: Vec3,
     pixel_delta_v: Vec3,
-    file: File,
     u: Vec3,
     v: Vec3,
     w: Vec3,
@@ -28,60 +27,54 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(file: File) -> Camera {
-        Camera {
-            aspect_ratio: 1.0,
-            image_width: 400,
-            samples: 100,
-            bounces: 10,
-            image_height: 400,
-            sample_scale: 1.0,
-            vfov: 90.0,
-            lookfrom: Point3::from(0.),
-            lookat: Point3::new(0., 0., -1.),
-            vup: Vec3::new(0., 1., 0.),
-            defocus_angle: 0.,
-            focus_dist: 10.,
-            center: Vec3::from(0.0),
-            pixel00_loc: Vec3::from(0.0),
-            pixel_delta_u: Vec3::from(0.0),
-            pixel_delta_v: Vec3::from(0.0),
-            u: Vec3::from(0.0),
-            v: Vec3::from(0.0),
-            w: Vec3::from(0.0),
-            defocus_disc_u: Vec3::from(0.0),
-            defocus_disc_v: Vec3::from(0.0),
-            file,
-        }
+    pub fn new() -> Camera {
+        Camera::default()
     }
-    pub fn render<F>(&mut self, world: HittableList, mut progress: F) -> std::io::Result<()>
+    //
+    pub fn render_to_buffer<F>(&mut self, world: HittableList, mut progress: F) -> String
     where
         F: FnMut(u32),
     {
-        //iterates though the width and height of the\
-        //
-        //image
         self.initialize();
-        let mut buf = BufWriter::new(&self.file);
+        let mut buffer =
+            String::with_capacity((self.image_width * self.image_height * 12) as usize);
 
-        write!(buf, "P3\n{} {}\n255\n", self.image_width, self.image_height)?;
+        for j in 0..self.image_height {
+            for i in 0..self.image_width {
+                let mut pixel_color = Color::from(0.0);
+
+                for _ in 0..self.samples {
+                    let r = self.get_ray(i, j);
+                    pixel_color += self.ray_color(r, self.bounces, &world);
+                }
+                let rgb = (pixel_color * self.sample_scale).as_rgb_bytes();
+                buffer.push_str(&format!("{} {} {}\n", rgb[0], rgb[1], rgb[2]));
+            }
+            progress(j);
+        }
+        buffer
+    }
+
+    pub fn render_to_bytes<F>(&mut self, world: HittableList, mut progress: F) -> Vec<u8>
+    where
+        F: FnMut(u32),
+    {
+        self.initialize();
+        let mut buffer = Vec::new();
 
         for j in 0..=self.image_height - 1 {
             for i in 0..=self.image_width - 1 {
                 let mut pixel_color = Color::from(0.0);
 
                 for _ in 0..self.samples {
-                    //gets jittered rays per sample, averages result.
                     let r = self.get_ray(i, j);
                     pixel_color += self.ray_color(r, self.bounces, &world);
                 }
-                
-                write_color(pixel_color * self.sample_scale, &mut buf)?;
+                buffer.extend_from_slice(&(pixel_color * self.sample_scale).as_rgb_bytes());
             }
-            buf.flush()?;
-            progress(j)
+            progress(j);
         }
-        Ok(())
+        buffer
     }
 
     pub fn initialize(&mut self) {
@@ -105,7 +98,6 @@ impl Camera {
         let viewport_u = viewport_width * self.u;
         let viewport_v = viewport_height * -self.v;
         //Creates the vectors across the edge of the viewport
-
         //calculates the delta vectors, for movement between pixels.
         self.pixel_delta_u = viewport_u / self.image_width as f64;
         self.pixel_delta_v = viewport_v / self.image_height as f64;
@@ -163,6 +155,33 @@ impl Camera {
     }
     pub fn get_height(&self) -> u32 {
         self.image_height
+    }
+}
+impl Default for Camera {
+    fn default() -> Self {
+        Self {
+            aspect_ratio: 1.0,
+            image_width: 600,
+            samples: 100,
+            bounces: 10,
+            image_height: 400,
+            sample_scale: 1.0,
+            vfov: 90.0,
+            lookfrom: Point3::from(0.),
+            lookat: Point3::new(0., 0., -1.),
+            vup: Vec3::new(0., 1., 0.),
+            defocus_angle: 0.,
+            focus_dist: 10.,
+            center: Vec3::from(0.0),
+            pixel00_loc: Vec3::from(0.0),
+            pixel_delta_u: Vec3::from(0.0),
+            pixel_delta_v: Vec3::from(0.0),
+            u: Vec3::from(0.0),
+            v: Vec3::from(0.0),
+            w: Vec3::from(0.0),
+            defocus_disc_u: Vec3::from(0.0),
+            defocus_disc_v: Vec3::from(0.0),
+        }
     }
 }
 

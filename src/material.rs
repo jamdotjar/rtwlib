@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
-use rand::{Rng};
+use rand::Rng;
 
-use crate::{color::Color, ray::Ray, vec3::*, hittable::HitRecord};
+use crate::{color::Color, hittable::HitRecord, ray::Ray, vec3::*};
 
 pub trait Material: Debug {
     fn scatter(
@@ -24,8 +24,7 @@ pub struct Lambertian {
     albedo: Color,
 }
 #[derive(Debug)]
-pub struct Normal {
-}
+pub struct Normal {}
 #[derive(Debug)]
 pub struct Metal {
     albedo: Color,
@@ -49,13 +48,12 @@ impl Lambertian {
 impl Dielectric {
     pub fn new(ior: f64) -> Self {
         Dielectric { ior }
-    
     }
-   }
+}
 impl Normal {
     pub fn new() -> Self {
         Normal {}
-    }    
+    }
 }
 
 impl Material for Lambertian {
@@ -81,16 +79,18 @@ impl Material for Lambertian {
 }
 
 impl Material for Normal {
-    fn scatter(&self,
+    fn scatter(
+        &self,
         _r_in: &Ray,
         rec: &HitRecord,
         attenuation: &mut Color,
-        scattered: &mut Ray,) -> bool {
-            let mut scatter_direction = rec.normal + (Vec3::random_normalized());
-            *scattered = Ray::new(rec.p, scatter_direction);
-            *attenuation = Color::new(rec.normal.x, rec.normal.y, rec.normal.z);
-            true
-        }
+        scattered: &mut Ray,
+    ) -> bool {
+        let mut scatter_direction = rec.normal + (Vec3::random_normalized());
+        *scattered = Ray::new(rec.p, scatter_direction);
+        *attenuation = Color::new(rec.normal.x, rec.normal.y, rec.normal.z);
+        true
+    }
 }
 
 impl Material for Metal {
@@ -131,9 +131,8 @@ impl Material for Dielectric {
 
         let cannot_refract: bool = ri * sin_theta > 1.0;
         let mut direction = Vec3::from(0.);
-        
-        
-        if cannot_refract || reflectance(cos_theta, ri) > rand::thread_rng().gen_range(0.0..1.0){
+
+        if cannot_refract || reflectance(cos_theta, ri) > rand::thread_rng().gen_range(0.0..1.0) {
             direction = unit_direction.reflect(&rec.normal)
         } else {
             direction = refract(unit_direction, &rec.normal, ri)
@@ -146,9 +145,8 @@ impl Material for Dielectric {
 }
 
 //schlick approximation for reflectance at grazing angles
- fn reflectance(cos: f64, ior: f64) -> f64 {
-        let r0 = (1. - ior) / (1. + ior);
-        let r0 = r0 * r0; //if everything breaks again try changing this
-        r0 + (1. - r0) * (1. - cos).powf(5.)
-    }
-
+fn reflectance(cos: f64, ior: f64) -> f64 {
+    let r0 = (1. - ior) / (1. + ior);
+    let r0 = r0 * r0; //if everything breaks again try changing this
+    r0 + (1. - r0) * (1. - cos).powf(5.)
+}

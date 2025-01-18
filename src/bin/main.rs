@@ -6,22 +6,12 @@ use rtwlib::material::*;
 use rtwlib::sphere::*;
 use rtwlib::vec3::*;
 use std::rc::Rc;
-use std::{f64::consts::PI, fs::File};
+use std::{f64::consts::PI, fs::File, io::Write};
 fn main() -> std::io::Result<()> {
     //World, or a very large list of all the objects in the scene.
     let mut world = HittableList {
         objects: Vec::new(),
     };
-    /*
-
-    let R = (PI/4.0).cos();
-
-    let mat_right = Lambertian::new(Color::new(0., 0., 1.));
-    let mat_left = Lambertian::new(Color::new(1., 0., 0.));
-
-    world.add(Sphere::new(Point3::new(-R, 0., -1.), R, mat_left));
-    world.add(Sphere::new(Point3::new(R, 0., -1.), R, mat_right));
-    */
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let mat_center = Rc::new(Normal::new());
     let mat_left = Rc::new(Dielectric::new(1.5));
@@ -30,6 +20,7 @@ fn main() -> std::io::Result<()> {
     world.add(Sphere::new(Point3::new(0., 0., -1.2), 0.5, mat_center));
     world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));
     world.add(Sphere::new(Point3::new(1., 0., -1.), 0.5, mat_right));
+
     /*    let mat_ground = Lambertian::new(Color::from(0.5));
     world.add(Sphere::new(Point3::new(0., -1000., 0.), 1000., mat_ground));
     let mut rng = rand::thread_rng();
@@ -80,9 +71,9 @@ fn main() -> std::io::Result<()> {
     */
     //Gets file from args
     let args: Vec<String> = std::env::args().collect();
-    let file = File::create(args[1].to_string())?;
+    let mut file = File::create(args[1].to_string())?;
 
-    let mut cam = Camera::new(file);
+    let mut cam = Camera::new();
     //RENDER SETTINGS
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 600;
@@ -96,9 +87,27 @@ fn main() -> std::io::Result<()> {
 
     cam.defocus_angle = 0.0;
     cam.focus_dist = 10.0;
+    cam.initialize();
     let height = cam.get_height();
-    cam.render(world, |progress| {
-        println!("{}/{} lines rendered", progress, height);
-    })?;
+    let strwidth = height.to_string().len();
+    let buffer = cam.render_to_bytes(world, |progress| {
+        print!(
+            "\r{:0width$}/{} lines rendered",
+            progress,
+            height,
+            width = strwidth
+        );
+        std::io::stdout().flush().unwrap();
+    });
+    print!(
+        "\r{:0width$}/{} lines rendered",
+        height,
+        height,
+        width = strwidth
+    );
+    println!("\n\rDone!");
+    println!("Writing to {}...", args[1].to_string());
+    file.write(format!("P6\n{} {}\n255\n", cam.image_width, cam.get_height()).as_bytes())?;
+    file.write_all(&buffer)?;
     Ok(())
 }
