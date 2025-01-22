@@ -51,5 +51,5 @@ impl Color {
         format!("#{:02x}{:02x}{:02x}", bytes[0], bytes[1], bytes[2])
     }
 }
-
+/// Color is an alias for `Vec3`, representing a color in RGB space.
 pub type Color = Vec3;
