@@ -1,6 +1,8 @@
+//! A collection of miscelanious ( unused ) utility functions, might come in handy later.
 use core::ops::Range;
 
-
+//ignore doc tests
+#[allow(missing_docs)]
 pub trait RangeExtensions {
     fn size(&self) -> f64;
     fn contains(&self, n: f64) -> bool;
@@ -8,8 +10,8 @@ pub trait RangeExtensions {
     fn clamp(&self, n: f64) -> f64;
 }
 
-
-impl RangeExtensions for Range<f64> { //Some fun utils for working wiutrh ranges (a..b)
+impl RangeExtensions for Range<f64> {
+    //Some fun utils for working wiutrh ranges (a..b)
     fn size(&self) -> f64 {
         return self.end - self.start;
     }

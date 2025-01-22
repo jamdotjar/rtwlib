@@ -1,3 +1,5 @@
+//! A [`Hittable`] object, Sphere. Contains the [`Hittable`] trait implementation for Sphere.
+
 use crate::{
     hittable::{HitRecord, Hittable},
     material::Material,
@@ -7,12 +9,14 @@ use crate::{
 use std::{ops::Range, rc::Rc};
 #[derive(Clone)]
 
+/// A `Sphere` is a struct that represents a sphere in 3D space. It has a center, radius, and pointer to a material.
 pub struct Sphere {
     center: Point3,
     radius: f64,
     mat: Rc<dyn Material>,
 }
 impl Sphere {
+    /// Creates a new `Sphere` with the given center, radius, and material.
     pub fn new(center: Point3, radius: f64, mat: Rc<dyn Material>) -> Self {
         Sphere {
             center,
