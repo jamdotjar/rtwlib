@@ -11,7 +11,7 @@ env:
 
 jobs:
   publish:
-
+    environment: secrets
     runs-on: ubuntu-latest
 
     steps:
