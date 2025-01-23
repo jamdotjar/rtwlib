@@ -1,4 +1,4 @@
-name: Rust
+name: Publish dry run
 
 on:
   push:
@@ -23,9 +23,11 @@ jobs:
     - name: Publish
       run: |-
           cargo publish \
+            --dry-run \
             --workspace \
             --all-features \
-            --allow-branch HEAD \
+            --allow-dirty \
             --no-confirm \
             --no-verify \
-            --execute
+
+    
