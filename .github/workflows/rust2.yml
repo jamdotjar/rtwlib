@@ -22,8 +22,7 @@ jobs:
       run: cargo login ${{ secrets.CRATES_IO_API_TOKEN }}
     - name: Publish
       run: |-
-          cargo release \
-            publish \
+          cargo publish \
             --workspace \
             --all-features \
             --allow-branch HEAD \
