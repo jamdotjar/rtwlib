@@ -17,6 +17,5 @@ jobs:
     - name: Publish
       run: |-
           cargo publish \
-            --workspace \
             --all-features \
             --allow-dirty \
