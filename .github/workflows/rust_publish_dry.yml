@@ -27,7 +27,4 @@ jobs:
             --workspace \
             --all-features \
             --allow-dirty \
-            --no-confirm \
-            --no-verify \
-
     
