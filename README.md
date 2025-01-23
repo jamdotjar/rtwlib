@@ -108,6 +108,10 @@ let mat_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.8)*2));
 ```
 
 ## Gallery
+![dof2](https://github.com/user-attachments/assets/d5495b1c-87dd-4df4-a8b3-179291c67830)
+![diffuse](https://github.com/user-attachments/assets/5ed2b24a-ddb1-4130-a565-9b0873236bae)
+![image](https://github.com/user-attachments/assets/339355a2-5a0f-439e-8756-4570e9a0622f)
+![final33](https://github.com/user-attachments/assets/e125ecf3-bb8c-44e7-89d6-415e7985444c)
 
 
 ## Future plans:
