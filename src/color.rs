@@ -52,4 +52,6 @@ impl Color {
     }
 }
 /// Color is an alias for `Vec3`, representing a color in RGB space.
+/// For the case of this, the color is assumed to be in the range of 0.0 to 1.0, pushing the color above that range can cause visual artifacts.  
+/// Color can also be used as a Sky for the camera.
 pub type Color = Vec3;

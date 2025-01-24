@@ -301,6 +301,17 @@ pub trait Sky {
     fn color(&self, ray: Ray) -> Vec3;
 }
 /// A simple gradient sky, that fades from one color to another based on the Y value of the ray direction
+///
+/// Example:
+///     ```
+///    use rtwlib::camera::GradientSky;
+///   use rtwlib::color::Color;
+///  use rtwlib::vec3::Vec3;
+///     let sky = GradientSky {
+///        start: Color::new(0.5, 0.7, 1.0),
+///       end: Color::new(1.0, 1.0, 1.0),
+/// };
+/// ```
 pub struct GradientSky {
     /// The color at the top of the sky
     pub start: Color,

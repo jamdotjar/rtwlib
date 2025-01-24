@@ -1,5 +1,6 @@
 //! A module for the `Plane` struct and its implementation.
 //! A `Plane` is an infinite plane, defined by an origin point, a normal vector, and a material.
+//! The normal vector is the direction that the plane faces.
 use std::ops::Range;
 use std::rc::Rc;
 
@@ -37,6 +38,7 @@ impl Plane {
 
 impl Hittable for Plane {
     fn hit(&self, r: &crate::ray::Ray, ray_t: Range<f64>, rec: &mut HitRecord) -> bool {
+        // this took me like 2 hours, dont screw around with it too much.
         let denom = dot(&self.normal, &r.direction);
         if denom.abs() > 1e-4 {
             let t = dot(&(self.origin - r.origin), &self.normal) / denom;
