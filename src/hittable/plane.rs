@@ -1,3 +1,5 @@
+//! A module for the `Plane` struct and its implementation.
+//! A `Plane` is an infinite plane, defined by an origin point, a normal vector, and a material.
 use std::ops::Range;
 use std::rc::Rc;
 
@@ -11,7 +13,8 @@ use super::Material;
 use super::Vec3;
 
 #[derive(Clone, Debug)]
-/// An infinite plane in 3D space, with an origin, normal, and material.
+/// An infinite plane, with an origin, normal, and material.
+/// The normal
 pub struct Plane {
     /// The origin of the plane
     pub origin: Vec3,
@@ -26,7 +29,7 @@ impl Plane {
     pub fn new(origin: Vec3, normal: Vec3, mat: Rc<dyn Material>) -> Self {
         Plane {
             origin,
-            normal,
+            normal: normal.normalized(),
             mat,
         }
     }

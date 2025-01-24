@@ -40,8 +40,8 @@ fn main() -> std::io::Result<()> {
 
     //create a new cam, and set relavant settings.
     let mut cam = Camera::new();
-    cam.image_width = 300;
-    cam.image_height = 150;
+    cam.image_width = 1600;
+    cam.image_height = 900;
     cam.samples = 250;
     cam.bounces = 50;
 
