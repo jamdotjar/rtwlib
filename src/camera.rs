@@ -15,6 +15,8 @@
 //!     2. Create a `Ray` using `get_ray` with the pixel coordinates.
 //!     3. Trace the ray using `ray_color` to get the color of the pixel.
 //! From here, you can do whatever you want with the color, save it to a buffer, write it to a file, or even display it immediately on screen.
+//!
+//! Cameras can have
 use crate::{color::*, hittable::*, ray::*, vec3::*};
 use rand::{thread_rng, Rng};
 
@@ -38,6 +40,7 @@ use rand::{thread_rng, Rng};
 /// * `vup` - The up vector of the camera, generally `(0, 1, 0)` for a camera with Y as up.
 /// * `defocus_angle` - The angle of the defocus disk, used to set blur strength. 0.0 disables distance blur effect.
 /// * `focus_dist` - The distance from the camera to the focus plane.
+/// * `sky` - The sky object, used to render the background of the scene.
 ///
 /// Private: (used for internal rendering calculations)
 /// * `sample_scale` - The scale of the samples, calculated as `1.0 / samples as f64`.
@@ -84,6 +87,7 @@ pub struct Camera {
     w: Vec3,
     defocus_disc_u: Vec3,
     defocus_disc_v: Vec3,
+    sky: Box<dyn Sky>,
 }
 
 impl Camera {
@@ -233,13 +237,13 @@ impl Camera {
                 //does bounce/scattter for materials of hit object
                 return attenuation * self.ray_color(scattered, bounces - 1, world);
             }
+
             return Color::new(0., 0., 0.); // Show up around the edge of metals
         }
 
         // if the ray hits nothing, calculates a sky color
-        let unit_direction = r.direction.normalized();
-        let a = 0.5 * (unit_direction.y + 1.0);
-        return (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.4, 0.53, 0.75);
+
+        return self.sky.color(r);
     }
     /// Returns the height of the camera's image
     pub fn get_height(&self) -> u32 {
@@ -270,6 +274,10 @@ impl Default for Camera {
             w: Vec3::from(0.0),
             defocus_disc_u: Vec3::from(0.0),
             defocus_disc_v: Vec3::from(0.0),
+            sky: Box::new(GradientSky {
+                start: Color::new(0.5, 0.7, 1.0),
+                end: Color::new(1.0, 1.0, 1.0),
+            }),
         }
     }
 }
@@ -283,4 +291,42 @@ fn sample_square() -> Vec3 {
 fn defocus_disk_sample(cam: &Camera) -> Point3 {
     let p = Vec3::random_in_unit_disk();
     cam.center + (p.x * cam.defocus_disc_u) + (p.y * cam.defocus_disc_v)
+}
+
+/// Any object that implements the `Sky` trait can be used as a sky for the camera.
+/// For a simple sky, you can use the [`Color`] struct which renders a solid color, or the [`GradientSky`] struct which renders a gradient between two colors.
+/// You can also implement your own sky by implementing the `Sky` trait for your struct.
+pub trait Sky {
+    /// Returns the color of the sky for a given ray
+    fn color(&self, ray: Ray) -> Vec3;
+}
+/// A simple gradient sky, that fades from one color to another based on the Y value of the ray direction
+///
+/// Example:
+///     ```
+///    use rtwlib::camera::GradientSky;
+///   use rtwlib::color::Color;
+///  use rtwlib::vec3::Vec3;
+///     let sky = GradientSky {
+///        start: Color::new(0.5, 0.7, 1.0),
+///       end: Color::new(1.0, 1.0, 1.0),
+/// };
+/// ```
+pub struct GradientSky {
+    /// The color at the top of the sky
+    pub start: Color,
+    /// The color at the bottom of the sky
+    pub end: Color,
+}
+
+impl Sky for Color {
+    fn color(&self, _direction: Ray) -> Vec3 {
+        *self
+    }
+}
+impl Sky for GradientSky {
+    fn color(&self, ray: Ray) -> Vec3 {
+        let t = 0.5 * (ray.direction.normalized().y + 1.0);
+        self.start * (1.0 - t) + self.end * t
+    }
 }

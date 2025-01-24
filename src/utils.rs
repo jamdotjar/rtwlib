@@ -11,7 +11,7 @@ pub trait RangeExtensions {
 }
 
 impl RangeExtensions for Range<f64> {
-    //Some fun utils for working wiutrh ranges (a..b)
+    //Some fun utils for working with ranges (a..b)
     fn size(&self) -> f64 {
         return self.end - self.start;
     }

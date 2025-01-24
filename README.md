@@ -11,6 +11,13 @@ This *is* a library, so it can be used in other projects. If you want to just me
 
 
 This is mainly to learn about raytracing and rust Structs, Impl and Traits, my goal is to try and implement as much of the required functionality by hand. Right now, this is mainly just the `Vec3` class and associated functions, But I plan to add a homemade random number generator, and a PNG encoder. 
+## Features:
+- Simple and easy to use
+- Customizable
+- Supports multiple materials
+- Spheres
+- Planes
+- [Semi-readable documentation](https://docs.rs/rtwlib/latest/rtwlib/)
 
 ## Usage:
 
@@ -112,7 +119,7 @@ let mat_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.8)*2));
 ![diffuse](https://github.com/user-attachments/assets/5ed2b24a-ddb1-4130-a565-9b0873236bae)
 ![image](https://github.com/user-attachments/assets/339355a2-5a0f-439e-8756-4570e9a0622f)
 ![final33](https://github.com/user-attachments/assets/e125ecf3-bb8c-44e7-89d6-415e7985444c)
-
+![rainbow](https://github.com/user-attachments/assets/ff16d0bd-3736-436f-9c13-3e8d159773e8)
 
 ## Future plans:
 My general goal is to similtanouisly develop this, and the tui, to "test" the library. Some feature I want to add are:
