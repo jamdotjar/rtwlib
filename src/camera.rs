@@ -87,7 +87,8 @@ pub struct Camera {
     w: Vec3,
     defocus_disc_u: Vec3,
     defocus_disc_v: Vec3,
-    sky: Box<dyn Sky>,
+    /// The sky object, used to render the background of the scene
+    pub sky: Box<dyn Sky>,
 }
 
 impl Camera {

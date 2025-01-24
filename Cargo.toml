@@ -6,7 +6,7 @@ authors = ["jamdotjar"]
 description = "Raytracing library built in rust"
 license = "MIT"
 path = "src/lib.rs"
-repository = "https://github.com/jamdotjar/rtweekend-tui"
+repository = "https://github.com/jamdotjar/rtwlib"
 keywords = ["raytracing", "graphics", "tui"]
 categories = ["rendering"]
 
