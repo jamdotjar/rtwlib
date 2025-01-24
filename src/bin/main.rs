@@ -1,9 +1,10 @@
+use plane::Plane;
 use rtwlib::camera::*;
 use rtwlib::color::Color;
 use rtwlib::hittable::*;
 use rtwlib::material::*;
 //use rand::Rng;
-use rtwlib::sphere::*;
+use rtwlib::hittable::sphere::*;
 use rtwlib::vec3::*;
 use std::rc::Rc;
 use std::{fs::File, io::Write};
@@ -13,33 +14,43 @@ fn main() -> std::io::Result<()> {
         objects: Vec::new(),
     };
     //create the materials
-    let mat_ground = Rc::new(Lambertian::new(Color::new(0.3, 0.86, 0.1)));
-    let mat_center = Rc::new(Normal::new());
-    let mat_left = Rc::new(Dielectric::new(1.5));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.2));
+    let mat_r = Rc::new(Lambertian::new(Color::new(1, 0, 0)));
+    let mat_o = Rc::new(Lambertian::new(Color::new(1., 0.5, 0.)));
+    let mat_y = Rc::new(Lambertian::new(Color::new(1., 1., 0.)));
+    let mat_g = Rc::new(Lambertian::new(Color::new(0, 1, 0)));
+    let mat_b = Rc::new(Lambertian::new(Color::new(0, 0, 1)));
+    let mat_v = Rc::new(Lambertian::new(Color::new(0.8, 0.3, 0.8)));
+    let mat_ground = Rc::new(Lambertian::new(Color::new(0.9, 0.9, 0.9)));
     //add spheres to the world
-    world.add(Sphere::new(Point3::new(0., -100.5, -1.), 100.0, mat_ground));
-    world.add(Sphere::new(Point3::new(0., 0., -1.), 0.5, mat_center));
-    world.add(Sphere::new(Point3::new(-1., 0., -1.), 0.5, mat_left));
-    world.add(Sphere::new(Point3::new(1., 0., -1.), 0.5, mat_right));
+    world.add(Sphere::new(Point3::new(0., 0., 2.5), 0.5, mat_r));
+    world.add(Sphere::new(Point3::new(0., 0., 1.5), 0.5, mat_o));
+    world.add(Sphere::new(Point3::new(0., 0., 0.5), 0.5, mat_y));
+    world.add(Sphere::new(Point3::new(0., 0., -0.5), 0.5, mat_g));
+    world.add(Sphere::new(Point3::new(0., 0., -1.5), 0.5, mat_b));
+    world.add(Sphere::new(Point3::new(0., 0., -2.5), 0.5, mat_v));
 
+    world.add(Plane::new(
+        Point3::new(0., -0.5, 0.),
+        Vec3::new(0., 1., 0.),
+        mat_ground,
+    ));
     //Creates a file based on args
     let args: Vec<String> = std::env::args().collect();
     let mut file = File::create(args[1].to_string())?;
 
     //create a new cam, and set relavant settings.
     let mut cam = Camera::new();
-    cam.image_width = 1600;
-    cam.image_height = 900;
+    cam.image_width = 300;
+    cam.image_height = 150;
     cam.samples = 250;
     cam.bounces = 50;
 
-    cam.vfov = 45.0;
-    cam.lookfrom = Point3::new(1.5, 0.5, 0.);
-    cam.lookat = Point3::new(0., 0., -0.5);
+    cam.vfov = 60.0;
+    cam.lookfrom = Point3::new(3., 1.0, 0.);
+    cam.lookat = Point3::new(0., 0.0, 0.);
     cam.vup = Vec3::new(0., 1., 0.);
 
-    cam.defocus_angle = 2.;
+    cam.defocus_angle = 0.0;
     cam.focus_dist = 2.3;
     cam.initialize(); //make sure to do this before render
     let lines = cam.image_height;

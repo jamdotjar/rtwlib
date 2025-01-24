@@ -3,6 +3,8 @@
 //! Any hittable object must implement the `Hittable` trait, which requires the `hit` function to be implemented, which determines if a ray hits the object.
 //! The `HittableList` struct is a collection of hittable objects, and implements the `Hittable` trait itself, allowing for nested collections of objects ( I dont see why you would need that ).
 //!
+pub mod plane;
+pub mod sphere;
 use crate::{
     color::Color,
     material::{Lambertian, Material},

@@ -117,7 +117,7 @@ impl Material for Normal {
         let scatter_direction = rec.normal + (Vec3::random_normalized());
         *scattered = Ray::new(rec.p, scatter_direction);
         *attenuation = Color::new(rec.normal.x, rec.normal.y, rec.normal.z);
-        true
+        false
     }
 }
 

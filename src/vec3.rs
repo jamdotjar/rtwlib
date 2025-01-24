@@ -215,7 +215,6 @@ where
 
 impl Sub for Vec3 {
     type Output = Vec3;
-
     fn sub(self, other: Vec3) -> Vec3 {
         Vec3 {
             x: self.x - other.x,
