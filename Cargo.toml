@@ -1,6 +1,6 @@
 [package]
 name = "rtwlib"
-version = "0.1.3"
+version = "0.1.3a"
 edition = "2021"
 authors = ["jamdotjar"]
 description = "Raytracing library built in rust"
@@ -13,7 +13,7 @@ categories = ["rendering"]
 
 [lib]
 name = "rtwlib"
-version = "0.1.3"
+version = "0.1.3a"
 
 [dependencies]
 rand = "0.8.5"
