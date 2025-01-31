@@ -50,7 +50,19 @@ impl Color {
         let bytes = self.to_rgb_bytes();
         format!("#{:02x}{:02x}{:02x}", bytes[0], bytes[1], bytes[2])
     }
+    ///Converts a hexadecimal string to a color.
+    pub fn from_hex(hex: &str) -> Result<Vec3, std::num::ParseIntError> {
+        let hex = hex.trim_start_matches('#');
+        let r = u8::from_str_radix(&hex[0..2], 16)?;
+        let g = u8::from_str_radix(&hex[2..4], 16)?;
+        let b = u8::from_str_radix(&hex[4..6], 16)?;
+        let r = r as f64 / 255.0;
+        let g = g as f64 / 255.0;
+        let b = b as f64 / 255.0;
+        Ok(Vec3::new(r, g, b))
+    }
 }
+
 /// Color is an alias for `Vec3`, representing a color in RGB space.
 /// For the case of this, the color is assumed to be in the range of 0.0 to 1.0, pushing the color above that range can cause visual artifacts.  
 /// Color can also be used as a Sky for the camera.

@@ -297,22 +297,44 @@ fn defocus_disk_sample(cam: &Camera) -> Point3 {
 /// Any object that implements the `Sky` trait can be used as a sky for the camera.
 /// For a simple sky, you can use the [`Color`] struct which renders a solid color, or the [`GradientSky`] struct which renders a gradient between two colors.
 /// You can also implement your own sky by implementing the `Sky` trait for your struct.
-pub trait Sky {
+pub trait Sky: SkyClone {
     /// Returns the color of the sky for a given ray
     fn color(&self, ray: Ray) -> Vec3;
 }
+
+/// A trait to allow cloning of a `Sky` object, its useful.
+pub trait SkyClone {
+    fn clone_box(&self) -> Box<dyn Sky>;
+}
+
+impl<T> SkyClone for T
+where
+    T: 'static + Sky + Clone,
+{
+    fn clone_box(&self) -> Box<dyn Sky> {
+        Box::new(self.clone())
+    }
+}
+
+impl Clone for Box<dyn Sky> {
+    fn clone(&self) -> Box<dyn Sky> {
+        self.clone_box()
+    }
+}
+
 /// A simple gradient sky, that fades from one color to another based on the Y value of the ray direction
 ///
 /// Example:
-///     ```
-///    use rtwlib::camera::GradientSky;
-///   use rtwlib::color::Color;
-///  use rtwlib::vec3::Vec3;
-///     let sky = GradientSky {
-///        start: Color::new(0.5, 0.7, 1.0),
-///       end: Color::new(1.0, 1.0, 1.0),
+/// ```
+/// use rtwlib::camera::GradientSky;
+/// use rtwlib::color::Color;
+/// use rtwlib::vec3::Vec3;
+/// let sky = GradientSky {
+///     start: Color::new(0.5, 0.7, 1.0),
+///     end: Color::new(1.0, 1.0, 1.0),
 /// };
 /// ```
+#[derive(Clone)]
 pub struct GradientSky {
     /// The color at the top of the sky
     pub start: Color,
@@ -325,6 +347,7 @@ impl Sky for Color {
         *self
     }
 }
+
 impl Sky for GradientSky {
     fn color(&self, ray: Ray) -> Vec3 {
         let t = 0.5 * (ray.direction.normalized().y + 1.0);
