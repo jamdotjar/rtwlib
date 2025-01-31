@@ -52,4 +52,26 @@ impl Hittable for Plane {
         }
         false
     }
+    fn as_string(&self) -> String {
+        format!(
+            "[ Plane ] Normal: ({}, {}, {}), Position: ({}x, {}z, {}z), material: {:?}",
+            self.normal.x,
+            self.normal.y,
+            self.normal.z,
+            self.origin.x,
+            self.origin.y,
+            self.origin.z,
+            self.mat
+        )
+    }
+    fn as_info_vec(&self) -> Vec<String> {
+        vec![
+            "Plane".to_string(),
+            "∞".to_string(),
+            self.origin.x.to_string(),
+            self.origin.y.to_string(),
+            self.origin.z.to_string(),
+            format!("{:?}", self.mat),
+        ]
+    }
 }
